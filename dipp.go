@@ -12,6 +12,12 @@ func NewProofMiddleware(secret string, handler http.Handler) http.Handler {
 	return &ProofMiddleware{next: handler, secret: secret}
 }
 
+func NewProofMiddlewareFunc(secret string) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return NewProofMiddleware(secret, next)
+	}
+}
+
 // ProofMiddleware will hash the response and add a header. NOTE that
 // this middleware will break Trailers added by calling code, after
 // their WriteHeader() call.
