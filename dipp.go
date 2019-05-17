@@ -35,7 +35,7 @@ func (m *ProofMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(writer.code)
 		}
 
-		_, _ = writer.Write(writer.buffer)
+		_, _ = w.Write(writer.buffer)
 	} else {
 		m.next.ServeHTTP(w, r)
 	}
