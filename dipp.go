@@ -8,7 +8,7 @@ import (
 	"golang.org/x/crypto/sha3"
 )
 
-func IntegrityProofMiddleware(secret string, handler http.Handler) http.Handler {
+func NewProofMiddleware(secret string, handler http.Handler) http.Handler {
 	return &ProofMiddleware{next: handler, secret: secret}
 }
 

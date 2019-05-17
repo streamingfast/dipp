@@ -15,7 +15,7 @@ router := http.NewServeMux()
 
 secret := "this is a randomly generated secret that is at least 32 bytes long"
 
-_ = http.ListenAndServe(":8080", dipp.ProofMiddleware(secret, router))
+_ = http.ListenAndServe(":8080", dipp.NewProofMiddleware(secret, router))
 ```
 
 Then ask your users to add this header to their request:
