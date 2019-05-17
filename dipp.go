@@ -3,6 +3,7 @@ package dipp
 import (
 	"encoding/hex"
 	"net/http"
+	"strings"
 
 	"golang.org/x/crypto/sha3"
 )
@@ -20,14 +21,14 @@ type ProofMiddleware struct {
 }
 
 func (m *ProofMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.Header.Get("X-Data-Integrity-Proof") == "true" {
+	if r.Header.Get("X-Data-Integrity-Proof") == "true" && strings.ToLower(r.Header.Get("Connection")) != "upgrade" {
 		writer := &ProofWriter{
 			ResponseWriter: w,
 		}
 
 		m.next.ServeHTTP(writer, r)
 
-		proof := mhashup(m.secret, writer.buffer)
+		proof := HashMac(m.secret, writer.buffer)
 		w.Header().Set("X-Data-Integrity-Proof", proof)
 
 		if writer.code != 0 {
@@ -57,8 +58,9 @@ func (w *ProofWriter) WriteHeader(code int) {
 	w.code = code
 }
 
-func mhashup(secret string, payload []byte) string {
+func HashMac(secret string, payload []byte) string {
 	digest := sha3.NewShake256()
+
 	_, _ = digest.Write([]byte(secret))
 	_, _ = digest.Write(payload)
 
