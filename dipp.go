@@ -28,20 +28,22 @@ type ProofMiddleware struct {
 
 func (m *ProofMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("X-Data-Integrity-Proof") == "true" && strings.ToLower(r.Header.Get("Connection")) != "upgrade" {
-		writer := &ProofWriter{
+		proofWriter := &ProofWriter{
 			ResponseWriter: w,
+			digestWriter: sha3.NewShake256(),
 		}
 
-		m.next.ServeHTTP(writer, r)
+		_, _ = proofWriter.digestWriter.Write([]byte(m.secret))
 
-		proof := HashMac(m.secret, writer.buffer)
+		// HTTP Trailing headers MUST be declared BEFORE any writes (see https://golang.org/pkg/net/http/#example_ResponseWriter_trailers)
+		w.Header().Set("Trailer", "X-Data-Integrity-Proof")
+
+		m.next.ServeHTTP(proofWriter, r)
+
+		out := make([]byte, 32)
+		_, _ = proofWriter.digestWriter.Read(out)
+		proof := hex.EncodeToString(out)
 		w.Header().Set("X-Data-Integrity-Proof", proof)
-
-		if writer.code != 0 {
-			w.WriteHeader(writer.code)
-		}
-
-		_, _ = w.Write(writer.buffer)
 	} else {
 		m.next.ServeHTTP(w, r)
 	}
@@ -49,19 +51,17 @@ func (m *ProofMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 type ProofWriter struct {
 	http.ResponseWriter
-
 	code int
-
-	buffer []byte
+	digestWriter sha3.ShakeHash
 }
 
 func (w *ProofWriter) Write(data []byte) (int, error) {
-	w.buffer = append(w.buffer, data...)
-	return len(data), nil
+	w.digestWriter.Write(data)
+	return w.ResponseWriter.Write(data)
 }
 
 func (w *ProofWriter) WriteHeader(code int) {
-	w.code = code
+	w.ResponseWriter.WriteHeader(code)
 }
 
 func HashMac(secret string, payload []byte) string {
