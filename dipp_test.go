@@ -70,9 +70,9 @@ func TestAuth(t *testing.T) {
 		assert.Equal(tc.expectedBody, string(b), tc.description)
 
 		if tc.expectedDIPP {
-			assert.Equal(tc.expectedDIPPValue, res.Trailer.Get("X-Data-Integrity-Proof"), tc.description)
+			assert.Equal(tc.expectedDIPPValue, res.Header.Get("X-Data-Integrity-Proof"), tc.description)
 		} else {
-			assert.Empty(res.Trailer.Get("X-Data-Integrity-Proof"), tc.description)
+			assert.Empty(res.Header.Get("X-Data-Integrity-Proof"), tc.description)
 		}
 	}
 }

@@ -37,7 +37,7 @@ you gave them, with the payload they received.
 Use the provided `dipp-checker` tool to do validation, which you can install with:
 
 ```
-go get github.com/eoscanada/dipp/dipp-checker
+go get github.com/eoscanada/dipp/cmd/dipp-checker
 ```
 
 and run as:
