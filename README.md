@@ -56,7 +56,7 @@ to validate integrity.
 
 The dfuse.io platform started this initiative alongside its Data Integrity Bounty Program.
 
-See https://hackerone.com/dfuse-io for details.
+See https://hackerone.com/dfuse for details.
 
 
 
