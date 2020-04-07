@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/eoscanada/dipp"
+	"github.com/dfuse-io/dipp"
 )
 
 func main() {

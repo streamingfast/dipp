@@ -1,4 +1,4 @@
-module github.com/eoscanada/dipp
+module github.com/dfuse-io/dipp
 
 go 1.12
 

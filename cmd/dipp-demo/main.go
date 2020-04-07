@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/eoscanada/dipp"
+	"github.com/dfuse-io/dipp"
 	"net/http"
 )
 
@@ -13,4 +13,3 @@ func main() {
 	http.Handle("/", dipp.NewProofMiddleware("super-secret", http.HandlerFunc(someHandler)))
 	http.ListenAndServe("127.0.0.1:3000", nil)
 }
-
