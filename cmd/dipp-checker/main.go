@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/dfuse-io/dipp"
+	"github.com/streamingfast/dipp"
 )
 
 func main() {

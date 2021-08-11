@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/dfuse-io/dipp"
+	"github.com/streamingfast/dipp"
 	"net/http"
 )
 
